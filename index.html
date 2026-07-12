@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CheckPoint - Your productivity starts here</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app" id="app">
+
+    <!-- =========================================================
+         TOP BAR — brand + theme switch (present on every screen)
+    ========================================================== -->
+    <nav class="navbar">
+      <div class="brand">
+        <div class="brand-text">
+          <span class="brand-name">CheckPoint</span>
+          <span class="brand-tagline">Your productivity starts here</span>
+        </div>
+      </div>
+
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch between light and dark mode" aria-pressed="false">
+        <span class="theme-toggle-track">
+          <span class="theme-toggle-thumb" aria-hidden="true"></span>
+        </span>
+        <span class="theme-toggle-label" id="theme-toggle-label">Light</span>
+      </button>
+    </nav>
+
+    <!-- =========================================================
+         DASHBOARD HOME
+    ========================================================== -->
+    <main class="view view--active" id="view-dashboard" data-view="dashboard">
+
+      <!-- Hero: greeting, live clock, and the day-arc (signature element) -->
+      <section class="hero" aria-label="Today at a glance">
+        <!-- <svg class="day-arc" id="day-arc" viewBox="0 0 600 160" preserveAspectRatio="none" aria-hidden="true">
+          <path class="day-arc-track" d="M 20 150 A 280 280 0 0 1 580 150" />
+          <path class="day-arc-fill" id="day-arc-fill" d="M 20 150 A 280 280 0 0 1 580 150" />
+          <circle class="day-arc-marker" id="day-arc-marker" r="7" cx="20" cy="150" />
+        </svg> -->
+
+        <div class="hero-content">
+          <p class="eyebrow" id="greeting">Good morning</p>
+          <h1 class="clock" id="clock">8:00:00 AM</h1>
+          <p class="hero-date" id="date-display">Monday, July 6</p>
+        </div>
+      </section>
+
+      <!-- Bento grid: one preview card per module, each opens its full feature view -->
+      <section class="bento-grid" aria-label="Your modules">
+
+        <!-- Weather -->
+        <article class="card card--weather" data-feature="weather" tabindex="0" role="button" aria-label="Open weather">
+          <div class="card-head">
+            <span class="card-icon" aria-hidden="true">☁️</span>
+            <h2 class="card-title">Weather</h2>
+          </div>
+          <div class="card-body" id="weather-preview" data-state="loading">
+            <p class="card-loading">Fetching the weather…</p>
+          </div>
+        </article>
+
+        <!-- Todo -->
+        <article class="card card--todo" data-feature="todo" tabindex="0" role="button" aria-label="Open tasks">
+          <div class="card-head">
+            <span class="card-icon" aria-hidden="true">✓</span>
+            <h2 class="card-title">ToDo(s)</h2>
+          </div>
+          <div class="card-body" id="todo-preview">
+            <p class="card-empty">No tasks yet.</p>
+          </div>
+        </article>
+
+        <!-- Planner -->
+        <article class="card card--planner" data-feature="planner" tabindex="0" role="button" aria-label="Open daily planner">
+          <div class="card-head">
+            <span class="card-icon" aria-hidden="true">🗓</span>
+            <h2 class="card-title">Day Planner</h2>
+          </div>
+          <div class="card-body" id="planner-preview">
+            <p class="card-empty">Your hours from 9 AM to 12 AM are open.</p>
+          </div>
+        </article>
+
+        <!-- Goals -->
+        <article class="card card--goals" data-feature="goals" tabindex="0" role="button" aria-label="Open daily goals">
+          <div class="card-head">
+            <span class="card-icon" aria-hidden="true">◎</span>
+            <h2 class="card-title">Weekly goals</h2>
+          </div>
+          <div class="card-body">
+            <div class="progress-bar" aria-hidden="true">
+              <div class="progress-bar-fill" id="goals-preview-bar" style="width: 0%;"></div>
+            </div>
+            <p class="progress-label" id="goals-preview-label">0 of 0 done</p>
+          </div>
+        </article>
+
+        <!-- Pomodoro -->
+        <article class="card card--pomodoro" data-feature="pomodoro" tabindex="0" role="button" aria-label="Open focus timer">
+          <div class="card-head">
+            <span class="card-icon" aria-hidden="true">◷</span>
+            <h2 class="card-title">Pomodoro timer</h2>
+          </div>
+          <div class="card-body">
+            <p class="pomodoro-preview-time" id="pomodoro-preview-time">25:00</p>
+            <p class="card-subtle" id="pomodoro-preview-state">Ready?</p>
+          </div>
+        </article>
+
+        <!-- Quote -->
+        <article class="card card--quote" data-feature="quotes" tabindex="0" role="button" aria-label="Open motivation quote">
+          <div class="card-head">
+            <span class="card-icon" aria-hidden="true">❝</span>
+            <h2 class="card-title">Suvichaar</h2>
+          </div>
+          <div class="card-body" id="quote-preview" data-state="loading">
+            <p class="card-loading">Finding quote for you...</p>
+          </div>
+        </article>
+
+      </section>
+    </main>
+
+    <!-- =========================================================
+         TODO LIST — full feature view
+    ========================================================== -->
+    <section class="view feature-view" id="view-todo" data-view="todo">
+      <button class="back-btn" type="button" data-back>
+        <span aria-hidden="true">←</span> Return to CheckPoint
+      </button>
+
+      <div class="feature-head">
+        <h2>Tasks</h2>
+        <p class="feature-sub">Add your task(s) here. Mark them completed when done</p>
+      </div>
+
+      <form class="todo-form" id="todo-form">
+        <input
+          type="text"
+          id="todo-input"
+          class="text-input"
+          placeholder="Add a task…"
+          maxlength="120"
+          autocomplete="off"
+          required
+        />
+        <button type="submit" class="btn btn--primary">Add task</button>
+      </form>
+
+      <div class="filter-tabs" id="todo-filters" role="tablist" aria-label="Filter tasks">
+        <button class="filter-tab is-active" type="button" data-filter="all" role="tab" aria-selected="true">All</button>
+        <button class="filter-tab" type="button" data-filter="active" role="tab" aria-selected="false">Active</button>
+        <button class="filter-tab" type="button" data-filter="completed" role="tab" aria-selected="false">Completed</button>
+        <button class="filter-tab" type="button" data-filter="important" role="tab" aria-selected="false">Important</button>
+      </div>
+
+      <ul class="todo-list" id="todo-list" aria-live="polite">
+        <!-- Task items are rendered here by script.js -->
+      </ul>
+
+      <p class="empty-state" id="todo-empty-state" hidden>No task yet!</p>
+    </section>
+
+    <!-- =========================================================
+         DAILY PLANNER — full feature view
+    ========================================================== -->
+    <section class="view feature-view" id="view-planner" data-view="planner">
+      <button class="back-btn" type="button" data-back>
+        <span aria-hidden="true">←</span> Return to CheckPoint
+      </button>
+
+      <div class="feature-head">
+        <h2>Daily planner</h2>
+        <p class="feature-sub">One line per hour, 9 AM to 12 AM.</p>
+      </div>
+
+      <div class="planner-list" id="planner-list">
+        <!-- Hour rows are rendered here by script.js -->
+      </div>
+    </section>
+
+    <!-- =========================================================
+         Weekly GOALS — full feature view
+    ========================================================== -->
+    <section class="view feature-view" id="view-goals" data-view="goals">
+      <button class="back-btn" type="button" data-back>
+        <span aria-hidden="true">←</span> Return to CheckPoint
+      </button>
+
+      <div class="feature-head">
+        <h2>Weekly goals</h2>
+        <p class="feature-sub">Set a few goals for the week.</p>
+      </div>
+
+      <div class="goals-progress">
+        <div class="progress-bar progress-bar--large" aria-hidden="true">
+          <div class="progress-bar-fill" id="goals-bar" style="width: 0%;"></div>
+        </div>
+        <p class="progress-label" id="goals-label">0 of 0 complete</p>
+      </div>
+
+      <form class="goal-form" id="goal-form">
+        <input
+          type="text"
+          id="goal-input"
+          class="text-input"
+          placeholder="Add a goal…"
+          maxlength="120"
+          autocomplete="off"
+          required
+        />
+        <button type="submit" class="btn btn--primary">Add goal</button>
+      </form>
+
+      <ul class="goal-list" id="goal-list" aria-live="polite">
+        <!-- Goal items are rendered here by script.js -->
+      </ul>
+
+      <p class="empty-state" id="goals-empty-state" hidden>No goals yet.</p>
+    </section>
+
+    <!-- =========================================================
+         POMODORO TIMER — full feature view
+    ========================================================== -->
+    <section class="view feature-view" id="view-pomodoro" data-view="pomodoro">
+      <button class="back-btn" type="button" data-back>
+        <span aria-hidden="true">←</span> Return to CheckPoint
+      </button>
+
+      <div class="feature-head">
+        <h2>Focus timer</h2>
+        <p class="feature-sub">Work in short, timed bursts. Rest when the timer tells you to.</p>
+      </div>
+
+      <div class="pomodoro-panel">
+        <p class="pomodoro-mode" id="pomodoro-mode">Work session</p>
+        <p class="pomodoro-display" id="pomodoro-display">25:00</p>
+
+        <div class="pomodoro-controls">
+          <button class="btn btn--primary" type="button" id="pomodoro-start">Start</button>
+          <button class="btn btn--secondary" type="button" id="pomodoro-pause" disabled>Pause</button>
+          <button class="btn btn--ghost" type="button" id="pomodoro-reset">Reset</button>
+        </div>
+
+        <div class="pomodoro-settings">
+          <label class="field">
+            <span>Work minutes</span>
+            <input type="number" id="pomodoro-work-input" class="number-input" min="1" max="120" value="25" />
+          </label>
+          <label class="field">
+            <span>Break minutes</span>
+            <input type="number" id="pomodoro-break-input" class="number-input" min="1" max="60" value="5" />
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         MOTIVATION QUOTES — full feature view
+    ========================================================== -->
+    <section class="view feature-view" id="view-quotes" data-view="quotes">
+      <button class="back-btn" type="button" data-back>
+        <span aria-hidden="true">←</span> Return to CheckPoint
+      </button>
+
+      <div class="feature-head">
+        <h2>Suvichaar</h2>
+        <p class="feature-sub">A spark of motivation for today.</p>
+      </div>
+
+      <div class="quote-panel" id="quote-panel" data-state="loading">
+        <p class="quote-text" id="quote-text">Finding quote…</p>
+        <p class="quote-author" id="quote-author"></p>
+      </div>
+
+      <button class="btn btn--primary" type="button" id="quote-refresh">New quote</button>
+    </section>
+
+    <!-- =========================================================
+         WEATHER — full feature view
+    ========================================================== -->
+    <section class="view feature-view" id="view-weather" data-view="weather">
+      <button class="back-btn" type="button" data-back>
+        <span aria-hidden="true">←</span> Return to CheckPoint
+      </button>
+
+      <div class="feature-head">
+        <h2>Weather</h2>
+        <p class="feature-sub" id="weather-location">Locating you…</p>
+      </div>
+
+      <div class="weather-panel" id="weather-panel" data-state="loading">
+        <p class="card-loading">Fetching the weather…</p>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
