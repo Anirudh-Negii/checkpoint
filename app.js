@@ -840,7 +840,7 @@ function renderQuote(quote, state) {
 }
 
 // QUOTES
-// Fetches a random quote from the Quotable API, or uses a fallback quote.
+// Fetches a random quote from the DummyJSON API, or uses a fallback quote.
 async function loadQuote() {
   quotePanel.dataset.state = "loading";
   quoteText.textContent = "Finding some words…";
@@ -849,15 +849,24 @@ async function loadQuote() {
   quotePreview.innerHTML = '<p class="card-loading">Finding some words…</p>';
 
   try {
-    const response = await fetch("https://api.quotable.io/random");
+    const response = await fetch("https://dummyjson.com/quotes/random");
+
     if (!response.ok) {
       throw new Error("Quote request failed");
     }
 
     const data = await response.json();
-    renderQuote({ text: data.content, author: data.author }, "loaded");
+
+    renderQuote(
+      {
+        text: data.quote,
+        author: data.author,
+      },
+      "loaded"
+    );
   } catch (error) {
-    const fallback = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+    const fallback =
+      fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
     renderQuote(fallback, "error");
   }
 }
