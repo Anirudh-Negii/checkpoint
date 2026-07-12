@@ -85,9 +85,9 @@ const monthNames = ["January", "February", "March", "April", "May", "June", "Jul
 const fallbackQuotes = [
   { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
   { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
-  { text: "The man who moves a mountain begins by carrying away small stones.", author: "Comfucius" },
+  { text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius" },
   { text: "Success is the sum of small efforts, repeated day in & day out.", author: "Robert Collier" },
-  { text: "The future depends on what you do today.", author: "Mahatma Gsndhi" },
+  { text: "The future depends on what you do today.", author: "Mahatma Gandhi" },
   { text: "Don't count the days, Make the days count.", author: "Muhammad Ali" },
   { text: "The best way to predict the future is to create it.", author: "Peter Drucker" },
   { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
@@ -531,11 +531,11 @@ function setupTodo() {
 // ===========================
 
 // PLANNER
-// Draws the hourly planner rows from 8 AM to 8 PM.
+// Draws the hourly planner rows from 9 AM to 11 PM.
 function renderPlanner() {
   let html = "";
 
-  for (let hour = 9; hour <= 24; hour++) {
+  for (let hour = 9; hour <= 23; hour++) {
     const savedValue = plannerEntries[hour] || "";
     const suffix = hour >= 12 ? "PM" : "AM";
     let displayHour = hour % 12;
@@ -566,11 +566,11 @@ function updatePlannerPreview() {
   }
 
   if (filledHours === 0) {
-    plannerPreview.innerHTML = '<p class="card-empty">Your hours from 9 AM to 12 AM are open.</p>';
+    plannerPreview.innerHTML = '<p class="card-empty">Your hours from 9 AM to 11 PM are open.</p>';
     return;
   }
 
-  plannerPreview.innerHTML = `<p class="card-subtle">${filledHours} of 15 hours planned</p>`;
+  plannerPreview.innerHTML = `<p class="card-subtle">${filledHours} of 14 hours planned</p>`;
 }
 
 // PLANNER
