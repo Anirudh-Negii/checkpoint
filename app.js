@@ -95,32 +95,8 @@ const fallbackQuotes = [
   { text: "Don't watch the clock; do what it does. Keep going", author: "Sam Levenson" }
 ];
 
-const weatherCodes = {
-  0: "Clear sky",
-  1: "Mostly clear",
-  2: "Partly cloudy",
-  3: "Overcast",
-  45: "Foggy",
-  48: "Foggy",
-  51: "Light drizzle",
-  53: "Drizzle",
-  55: "Heavy drizzle",
-  61: "Light rain",
-  63: "Rain",
-  65: "Heavy rain",
-  71: "Light snow",
-  73: "Snow",
-  75: "Heavy snow",
-  80: "Rain showers",
-  81: "Rain showers",
-  82: "Violent rain showers",
-  95: "Thunderstorm",
-  96: "Thunderstorm with hail",
-  99: "Thunderstorm with hail",
-};
-
 // ===========================
-// HELPER FUNCTIONS
+// HELPER FUNCTIONS - These are small utility functions that are used throughout the app.
 // ===========================
 
 // Reads a value from local storage and turns it back into an object.
@@ -854,9 +830,8 @@ function renderWeatherError(message) {
 }
 
 // Fetches weather data from WeatherAPI for a given latitude and longitude.
-async function loadWeatherForCoordinates(lat, lon, label) {
+async function loadWeatherForCoordinates(lat, lon) {
   const url = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${lat},${lon}&aqi=no`;
-  console.log(url);
   const response = await fetch(url);
 
   if (!response.ok) {
@@ -919,6 +894,7 @@ function loadWeather() {
 // INITIALIZATION
 // ===========================
 function init() {
+
   todos = readJSON(TODO_KEY, []);
   plannerEntries = readJSON(PLANNER_KEY, {});
   goals = readJSON(GOALS_KEY, []);
@@ -926,26 +902,20 @@ function init() {
   loadTheme();
   setupTheme();
   setupNavigation();
-
   setupTodo();
   renderTodos();
   renderTodoPreview();
-
   renderPlanner();
   updatePlannerPreview();
   setupPlanner();
-
   setupGoals();
   renderGoals();
-
   setupPomodoro();
   renderPomodoro();
-
   setupQuote();
   loadQuote();
-
   loadWeather();
-
   updateClock();
   setInterval(updateClock, 1000);
+
 }
