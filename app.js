@@ -1,4 +1,4 @@
-// document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", init);
 
 // ===========================
 // SELECTORS
@@ -170,11 +170,9 @@ function escapeHTML(text) {
   return div.innerHTML;
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPER
 // Plays two short beep sounds using the Web Audio API.
-function playChime() {
+function sound() {
   try {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     const audio = new AudioContextClass();
@@ -734,7 +732,7 @@ function changePomodoroMode() {
     pomodoroSecondsLeft = Number(pomodoroWorkInput.value) * 60;
   }
 
-  playChime();
+  sound();
 
   if (finishedMode === "work") {
     notify("Work session complete", "Time for a break.");
@@ -880,36 +878,37 @@ function setupQuote() {
 // ===========================
 // WEATHER
 // ===========================
+const WEATHER_API_KEY = `a7b51af8e46a41daa6154032261307`;
 
 // WEATHER
 // Draws the weather panel and the dashboard preview with the loaded data.
 function renderWeather(locationLabel, current) {
-  const condition = weatherCodes[current.weather_code] || "Unknown conditions";
+  // const condition = weatherCodes[current.weather_code] || "Unknown conditions";
 
   weatherLocation.textContent = locationLabel;
   weatherPanel.dataset.state = "loaded";
   weatherPanel.innerHTML = `
     <div class="weather-hero">
       <div>
-        <p class="weather-temp">${Math.round(current.temperature_2m)}°C</p>
-        <p class="weather-condition">${condition}</p>
+        <p class="weather-temp">${Math.round(current.temp_c)}°C</p>
+        <p class="weather-condition">${current.condition.text}</p>
       </div>
     </div>
     <div class="weather-stats">
       <div class="weather-stat">
         <p class="weather-stat-label">Humidity</p>
-        <p class="weather-stat-value">${Math.round(current.relative_humidity_2m)}%</p>
+        <p class="weather-stat-value">${current.humidity}%</p>
       </div>
       <div class="weather-stat">
         <p class="weather-stat-label">Wind speed</p>
-        <p class="weather-stat-value">${Math.round(current.wind_speed_10m)} km/h</p>
+        <p class="weather-stat-value">${Math.round(current.wind_kph)} km/h</p>
       </div>
     </div>`;
 
   weatherPreview.dataset.state = "loaded";
   weatherPreview.innerHTML = `
-    <p class="weather-preview-temp">${Math.round(current.temperature_2m)}°C</p>
-    <p class="card-subtle">${condition} · ${locationLabel}</p>`;
+    <p class="weather-preview-temp">${Math.round(current.temp_c)}°C</p>
+    <p class="card-subtle">${current.condition.text} · ${locationLabel}</p>`;
 }
 
 // WEATHER
@@ -922,9 +921,10 @@ function renderWeatherError(message) {
 }
 
 // WEATHER
-// Fetches weather data from Open Meteo API for a given latitude and longitude.
+// Fetches weather data from WeatherAPI for a given latitude and longitude.
 async function loadWeatherForCoordinates(lat, lon, label) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&temperature_unit=celsius&wind_speed_unit=kmh`;
+  const url = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${lat},${lon}&aqi=no`;
+  console.log(url);
   const response = await fetch(url);
 
   if (!response.ok) {
@@ -932,22 +932,28 @@ async function loadWeatherForCoordinates(lat, lon, label) {
   }
 
   const data = await response.json();
-  renderWeather(label, data.current);
+
+  renderWeather(`${data.location.name}, ${data.location.region}`,
+    data.current
+  );
 }
 
 // WEATHER
 // Looks up New Delhi as a default city when location access is not available.
 async function loadFallbackWeather() {
   try {
-    const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent("New Delhi")}&count=1`);
-    const data = await response.json();
-    const place = data.results && data.results[0];
+    const url = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=New%20Delhi&aqi=no`;
 
-    if (!place) {
-      throw new Error("No fallback city");
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Weather request failed");
     }
 
-    await loadWeatherForCoordinates(place.latitude, place.longitude, "New Delhi (default)");
+    const data = await response.json();
+
+    renderWeather(`${data.location.name}, ${data.location.region}`, data.current);
+
   } catch (error) {
     renderWeatherError("Weather isn't available right now.");
   }
@@ -965,8 +971,11 @@ function loadWeather() {
 
   navigator.geolocation.getCurrentPosition(
     function (position) {
-      loadWeatherForCoordinates(position.coords.latitude, position.coords.longitude, "Your Location").catch(function () {
-        renderWeatherError("Weather isn't available right now.");
+      loadWeatherForCoordinates(
+        position.coords.latitude,
+        position.coords.longitude
+      ).catch(function () {
+        loadFallbackWeather();
       });
     },
     function () {
@@ -980,40 +989,8 @@ function loadWeather() {
 // INITIALIZATION
 // ===========================
 
-// INITIALIZATION
 // Loads all saved data, draws every feature and starts the clock.
-// function init() {
-//   todos = readJSON(TODO_KEY, []);
-//   plannerEntries = readJSON(PLANNER_KEY, {});
-//   goals = readJSON(GOALS_KEY, []);
-
-//   loadTheme();
-//   setupTheme();
-//   setupNavigation();
-
-//   setupTodo();
-//   renderTodos();
-//   renderTodoPreview();
-
-//   renderPlanner();
-//   updatePlannerPreview();
-//   setupPlanner();
-
-//   setupGoals();
-//   renderGoals();
-
-//   setupPomodoro();
-//   renderPomodoro();
-
-//   setupQuote();
-//   loadQuote();
-
-//   loadWeather();
-
-//   updateClock();
-//   setInterval(updateClock, 1000);
-// }
-
+function init() {
   todos = readJSON(TODO_KEY, []);
   plannerEntries = readJSON(PLANNER_KEY, {});
   goals = readJSON(GOALS_KEY, []);
@@ -1023,7 +1000,7 @@ function loadWeather() {
   setupNavigation();
 
   setupTodo();
-  renderTodos(); 
+  renderTodos();
   renderTodoPreview();
 
   renderPlanner();
@@ -1043,3 +1020,4 @@ function loadWeather() {
 
   updateClock();
   setInterval(updateClock, 1000);
+}
