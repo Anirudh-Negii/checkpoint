@@ -123,7 +123,6 @@ const weatherCodes = {
 // HELPER FUNCTIONS
 // ===========================
 
-// HELPER
 // Reads a value from local storage and turns it back into an object.
 function readJSON(key, fallback) {
   try {
@@ -137,17 +136,15 @@ function readJSON(key, fallback) {
   }
 }
 
-// HELPER
 // Saves an object into local storage as a JSON string.
 function writeJSON(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch (error) {
-    // could not save, so just do nothing
+    // No need to do anything if it fails, just don't save the data.
   }
 }
 
-// HELPER
 // Adds a zero in front of numbers smaller than 10.
 function zero(value) {
   if (value < 10) {
@@ -156,13 +153,11 @@ function zero(value) {
   return String(value);
 }
 
-// HELPER
 // Creates a simple unique id using the current time and a random number.
 function makeId() {
   return Date.now() + "-" + Math.floor(Math.random() * 100000);
 }
 
-// HELPER
 // Escapes text so it can be safely put inside HTML.
 function escapeHTML(text) {
   const div = document.createElement("div");
@@ -170,8 +165,7 @@ function escapeHTML(text) {
   return div.innerHTML;
 }
 
-// HELPER
-// Plays two short beep sounds using the Web Audio API.
+// Plays beep sound using the Web Audio API.
 function sound() {
   try {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -199,11 +193,10 @@ function sound() {
       secondOscillator.stop(audio.currentTime + 0.15);
     }, 180);
   } catch (error) {
-    // could not play sound, so just do nothing
+    // No sound if the Web Audio API is not supported.
   }
 }
 
-// HELPER
 // Shows a browser notification if permission has been granted.
 function notify(title, body) {
   if (!("Notification" in window)) {
@@ -228,7 +221,6 @@ function notify(title, body) {
 // NAVIGATION
 // ===========================
 
-// NAVIGATION
 // Shows the selected view and hides all the other views.
 function showView(viewName) {
   for (let i = 0; i < allViews.length; i++) {
@@ -247,7 +239,6 @@ function showView(viewName) {
   window.scrollTo({ top: 0 });
 }
 
-// NAVIGATION
 // Sets up click and keyboard events for opening and closing feature cards.
 function setupNavigation() {
   featureCards.forEach(function (card) {
@@ -274,7 +265,6 @@ function setupNavigation() {
 // CLOCK
 // ===========================
 
-// CLOCK
 // Figures out if it is morning, afternoon, evening or night.
 function getTimeOfDay(hour) {
   if (hour >= 4 && hour < 12) {
@@ -288,35 +278,6 @@ function getTimeOfDay(hour) {
   }
 }
 
-// CLOCK
-// Moves the little dot along the day progress arc.
-// function updateDayArc(now) {
-//   const secondsIntoDay = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-//   const fraction = secondsIntoDay / 86400;
-//   const arcLength = dayArcFill.getTotalLength();
-
-//   dayArcFill.style.strokeDasharray = String(arcLength);
-//   dayArcFill.style.strokeDashoffset = String(arcLength * (1 - fraction));
-
-//   const point = dayArcFill.getPointAtLength(arcLength * fraction);
-//   dayArcMarker.setAttribute("cx", point.x);
-//   dayArcMarker.setAttribute("cy", point.y);
-// }
-
-// CLOCK
-// Adds a highlight class to the planner row that matches the current hour.
-// function highlightCurrentPlannerHour(currentHour) {
-//   const rows = plannerList.querySelectorAll(".planner-row");
-//   rows.forEach(function (row) {
-//     if (Number(row.dataset.hour) === currentHour) {
-//       row.classList.add("is-current-hour");
-//     } else {
-//       row.classList.remove("is-current-hour");
-//     }
-//   });
-// }
-
-// CLOCK
 // Updates the live clock, date and greeting every second.
 function updateClock() {
   const now = new Date();
@@ -340,19 +301,16 @@ function updateClock() {
   } else if (timeOfDay === "evening") {
     greetingEl.textContent = "Good evening";
   } else {
-    greetingEl.textContent = "Late night grinding?";
+    greetingEl.textContent = "Working late?";
   }
 
   document.documentElement.dataset.time = timeOfDay;
-// //   updateDayArc(now);
-//   highlightCurrentPlannerHour(hours24);
 }
 
 // ===========================
 // THEME
 // ===========================
 
-// THEME
 // Applies the light or dark theme to the page and updates the toggle label.
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
@@ -360,7 +318,6 @@ function applyTheme(theme) {
   themeToggleLabel.textContent = theme === "dark" ? "Dark" : "Light";
 }
 
-// THEME
 // Loads the saved theme, or falls back to the system preference.
 function loadTheme() {
   const savedTheme = localStorage.getItem(THEME_KEY);
@@ -368,7 +325,6 @@ function loadTheme() {
   applyTheme(savedTheme || (prefersDark ? "dark" : "light"));
 }
 
-// THEME
 // Sets up the click event for switching between light and dark theme.
 function setupTheme() {
   themeToggle.addEventListener("click", function () {
@@ -382,7 +338,6 @@ function setupTheme() {
 // TODO
 // ===========================
 
-// TODO
 // Draws the todo list on the screen based on the current filter.
 function renderTodos() {
   let filteredTodos = todos.slice();
@@ -421,7 +376,6 @@ function renderTodos() {
   todoEmpty.hidden = filteredTodos.length !== 0;
 }
 
-// TODO
 // Draws the short todo summary that shows up on the dashboard card.
 function renderTodoPreview() {
   const openTasks = todos.filter(function (task) {
@@ -445,7 +399,6 @@ function renderTodoPreview() {
   todoPreview.innerHTML = html;
 }
 
-// TODO
 // Saves the todo list to local storage and re-draws it on the screen.
 function saveTodos() {
   writeJSON(TODO_KEY, todos);
@@ -453,7 +406,6 @@ function saveTodos() {
   renderTodoPreview();
 }
 
-// TODO
 // Sets up the form, filter tabs and buttons for the todo list.
 function setupTodo() {
   todoForm.addEventListener("submit", function (event) {
@@ -528,7 +480,6 @@ function setupTodo() {
 // PLANNER
 // ===========================
 
-// PLANNER
 // Draws the hourly planner rows from 9 AM to 11 PM.
 function renderPlanner() {
   let html = "";
@@ -544,7 +495,7 @@ function renderPlanner() {
     html += `
       <div class="planner-row" data-hour="${hour}">
         <span class="planner-hour">${displayHour}:00 ${suffix}</span>
-        <input type="text" class="planner-input" data-hour="${hour}" placeholder="What's happening?" value="${escapeHTML(savedValue)}" />
+        <input type="text" class="planner-input" data-hour="${hour}" placeholder="Plan this hour..." value="${escapeHTML(savedValue)}" />
         <button class="planner-clear" data-hour="${hour}" aria-label="Clear this slot">Clear</button>
       </div>`;
   }
@@ -552,7 +503,6 @@ function renderPlanner() {
   plannerList.innerHTML = html;
 }
 
-// PLANNER
 // Updates the short planner summary shown on the dashboard card.
 function updatePlannerPreview() {
   let filledHours = 0;
@@ -571,7 +521,6 @@ function updatePlannerPreview() {
   plannerPreview.innerHTML = `<p class="card-subtle">${filledHours} of 14 hours planned</p>`;
 }
 
-// PLANNER
 // Sets up typing and clear button events for the planner rows.
 function setupPlanner() {
   plannerList.addEventListener("input", function (event) {
@@ -607,7 +556,6 @@ function setupPlanner() {
 // GOALS
 // ===========================
 
-// GOALS
 // Draws the goal list and updates the progress bar.
 function renderGoals() {
   let html = "";
@@ -640,14 +588,12 @@ function renderGoals() {
   goalsPreviewLabel.textContent = completedGoals + " of " + goals.length + " done";
 }
 
-// GOALS
 // Saves the goals list to local storage and re-draws it on the screen.
 function saveGoals() {
   writeJSON(GOALS_KEY, goals);
   renderGoals();
 }
 
-// GOALS
 // Sets up the form and buttons for adding, completing and deleting goals.
 function setupGoals() {
   goalForm.addEventListener("submit", function (event) {
@@ -697,7 +643,6 @@ function setupGoals() {
 // POMODORO
 // ===========================
 
-// POMODORO
 // Draws the timer display, the mode label and the dashboard preview.
 function renderPomodoro() {
   const minutes = zero(Math.floor(pomodoroSecondsLeft / 60));
@@ -719,7 +664,6 @@ function renderPomodoro() {
   }
 }
 
-// POMODORO
 // Switches between work mode and break mode, then plays a sound and notifies.
 function changePomodoroMode() {
   const finishedMode = pomodoroModeValue;
@@ -743,7 +687,6 @@ function changePomodoroMode() {
   renderPomodoro();
 }
 
-// POMODORO
 // Counts down one second and switches modes when time runs out.
 function tickPomodoro() {
   pomodoroSecondsLeft = pomodoroSecondsLeft - 1;
@@ -756,7 +699,6 @@ function tickPomodoro() {
   renderPomodoro();
 }
 
-// POMODORO
 // Starts the countdown timer and disables the inputs while it runs.
 function startPomodoro() {
   if (pomodoroRunning) {
@@ -774,7 +716,6 @@ function startPomodoro() {
   renderPomodoro();
 }
 
-// POMODORO
 // Pauses the countdown timer and re-enables the start button.
 function pausePomodoro() {
   pomodoroRunning = false;
@@ -785,7 +726,6 @@ function pausePomodoro() {
   renderPomodoro();
 }
 
-// POMODORO
 // Resets the timer back to a fresh work session.
 function resetPomodoro() {
   pausePomodoro();
@@ -796,7 +736,6 @@ function resetPomodoro() {
   renderPomodoro();
 }
 
-// POMODORO
 // Sets up the start, pause, reset buttons and the minute input fields.
 function setupPomodoro() {
   pomodoroSecondsLeft = Number(pomodoroWorkInput.value) * 60;
@@ -824,7 +763,7 @@ function setupPomodoro() {
 // QUOTES
 // ===========================
 
-// QUOTES
+
 // Draws the quote text and author on the quote panel and the preview card.
 function renderQuote(quote, state) {
   quotePanel.dataset.state = state;
@@ -837,7 +776,6 @@ function renderQuote(quote, state) {
     <p class="card-subtle">— ${escapeHTML(quote.author || "Unknown")}</p>`;
 }
 
-// QUOTES
 // Fetches a random quote from the DummyJSON API, or uses a fallback quote.
 async function loadQuote() {
   quotePanel.dataset.state = "loading";
@@ -869,7 +807,6 @@ async function loadQuote() {
   }
 }
 
-// QUOTES
 // Sets up the refresh button so a new quote can be loaded on click.
 function setupQuote() {
   quoteRefresh.addEventListener("click", loadQuote);
@@ -880,11 +817,8 @@ function setupQuote() {
 // ===========================
 const WEATHER_API_KEY = `a7b51af8e46a41daa6154032261307`;
 
-// WEATHER
 // Draws the weather panel and the dashboard preview with the loaded data.
 function renderWeather(locationLabel, current) {
-  // const condition = weatherCodes[current.weather_code] || "Unknown conditions";
-
   weatherLocation.textContent = locationLabel;
   weatherPanel.dataset.state = "loaded";
   weatherPanel.innerHTML = `
@@ -911,7 +845,6 @@ function renderWeather(locationLabel, current) {
     <p class="card-subtle">${current.condition.text} · ${locationLabel}</p>`;
 }
 
-// WEATHER
 // Shows an error message in both the weather panel and the preview card.
 function renderWeatherError(message) {
   weatherPanel.dataset.state = "error";
@@ -920,7 +853,6 @@ function renderWeatherError(message) {
   weatherPreview.innerHTML = `<p class="card-loading">${message}</p>`;
 }
 
-// WEATHER
 // Fetches weather data from WeatherAPI for a given latitude and longitude.
 async function loadWeatherForCoordinates(lat, lon, label) {
   const url = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${lat},${lon}&aqi=no`;
@@ -938,7 +870,6 @@ async function loadWeatherForCoordinates(lat, lon, label) {
   );
 }
 
-// WEATHER
 // Looks up New Delhi as a default city when location access is not available.
 async function loadFallbackWeather() {
   try {
@@ -959,7 +890,6 @@ async function loadFallbackWeather() {
   }
 }
 
-// WEATHER
 // Asks the browser for the user's location and then loads the weather.
 function loadWeather() {
   weatherLocation.textContent = "Locating you…";
@@ -988,8 +918,6 @@ function loadWeather() {
 // ===========================
 // INITIALIZATION
 // ===========================
-
-// Loads all saved data, draws every feature and starts the clock.
 function init() {
   todos = readJSON(TODO_KEY, []);
   plannerEntries = readJSON(PLANNER_KEY, {});
